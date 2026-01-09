@@ -1,2 +1,9 @@
-pcsx2_backup_config.json
 __pycache__
+.vscode/
+
+# Ambiente virtual
+venv/
+.venv/
+
+# Configurações locais
+pcsx2_backup_config.json

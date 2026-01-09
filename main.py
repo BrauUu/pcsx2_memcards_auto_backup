@@ -2,7 +2,7 @@ import subprocess
 import psutil
 import time
 
-import settings
+import setup
 
 def pcsx2_is_running():
     return any(p.name().lower().startswith("pcsx2") for p in psutil.process_iter())
@@ -17,39 +17,37 @@ def backup(memcard_folder_path, rclone_remote):
         )
 
         if res.returncode == 0:
-            print("✓ Backup concluído com sucesso!")
+            print("\033[0;32m✓ Backup concluído com sucesso!\033[0m")
         else:
-            print("✗ Erro no backup:")
+            print("\033[0;31m✗ Erro no backup:\033[0m")
             print(res.stderr)
 
     except Exception as e:
-        print(f"✗ Erro inesperado: {e}")
-
+        print(f"\033[0;31m✗ Erro inesperado: {e}\033[0m")
 
 def main():
 
-    config = settings.load_config()
+    config = setup.load_config()
     
     if not config:
-        print("\nIt appears that you have not yet configured automatic backup.")
-        config = settings.configure()
-        if not config:
-            return
-    
+        return
+
     MEMCARD_FOLDER_PATH = config['memcard_path']
     RCLONE_REMOTE = config['rclone_remote']
 
-    print("\nWaiting PCSX2 start...")
+    while True:
+        print("\nWaiting PCSX2 start...")
 
-    while not pcsx2_is_running():
-        time.sleep(5)
+        while not pcsx2_is_running():
+            time.sleep(5)
 
-    print("PCSX2 detect! Monitoring...")
+        print("PCSX2 detect! Monitoring...")
 
-    while pcsx2_is_running():
-        time.sleep(5)
+        while pcsx2_is_running():
+            time.sleep(5)
 
-    print("PCSX2 closed! Starting backup...")
-    backup(MEMCARD_FOLDER_PATH, RCLONE_REMOTE)
+        print("PCSX2 closed! Starting backup...")
+        backup(MEMCARD_FOLDER_PATH, RCLONE_REMOTE)
 
-main()
+if __name__ == "__main__":
+    main()
