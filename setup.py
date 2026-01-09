@@ -66,11 +66,8 @@ def configure():
         else:
             break
 
-    if config:
-        default_remote_path = config['rclone_remote'].split(':')[1]
-        print(f'If you want, type a folder path where your files should be saved in your drive. Press Enter for keep actual ({default_remote_path}).')
-    else:
-        print('If you want, type a folder path where your files should be saved in your drive (ex: pcsx2/memcards_backup). Press Enter for empty.')
+    default_remote_path = config['rclone_remote'].split(':')[1]
+    print(f'If you want, type a folder path where your files should be saved in your drive (ex: pcsx2/memcards_backup). {f'Actual path is ({default_remote_path})' if default_remote_path else ''}. Press Enter for empty.')
     drive_folder_path = input('drive_path> ').strip()
     
     if drive_folder_path:

@@ -43,7 +43,7 @@ if [ ! -f "$CONFIG_FILE" ]; then
     python setup.py
     
     if [ ! -f "$CONFIG_FILE" ]; then
-        echo -e "${RED}✗ ERROR: Setup was not completed${NC}"
+        echo -e "${RED}✗ Setup was not completed${NC}"
         exit 1
     fi
     

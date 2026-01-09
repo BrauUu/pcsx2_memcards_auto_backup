@@ -15,8 +15,9 @@ This script monitors the PCSX2 process and, once it closes, uploads your memory 
 
 ## Reconfiguration
 
-To reconfigure your backup settings at any time, simply run the `setup.py` file:
+To reconfigure your backup settings at any time, simply run the `setup.py` file and follow the configuration prompts:
 
 ```bash
 python3 setup.py
 ```
+Then, just run `systemctl restart pcsx2_memcards_backup.service`.
