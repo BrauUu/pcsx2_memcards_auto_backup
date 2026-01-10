@@ -65,15 +65,6 @@ Write-Host "Creating Windows service..."
 
 $currentDir = Get-Location
 
-$batchContent = @"
-@echo off
-cd /d "$currentDir"
-call venv\Scripts\activate.bat
-python main.py
-"@
-
-$batchContent | Out-File -FilePath "pcsx2_backup_service.bat" -Encoding ASCII
-
 $psServiceContent = @"
 Set-Location "$currentDir"
 & "venv\Scripts\Activate.ps1"
@@ -83,7 +74,7 @@ python main.py
 $psServiceContent | Out-File -FilePath "pcsx2_backup_service.ps1" -Encoding UTF8
 
 try {
-    $action = New-ScheduledTaskAction -Execute "powershell.exe" -Argument "-WindowStyle Hidden -ExecutionPolicy Bypass -File `"$currentDir\pcsx2_backup_service.ps1`""
+    $action = New-ScheduledTaskAction -Execute "powershell.exe" -Argument " -NoProfile -NonInteractive -ExecutionPolicy Bypass -File "$currentDir\pcsx2_backup_service.ps1""
     $trigger = New-ScheduledTaskTrigger -AtStartup
     $settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -StartWhenAvailable
     $principal = New-ScheduledTaskPrincipal -UserId "SYSTEM" -LogonType ServiceAccount -RunLevel Highest
