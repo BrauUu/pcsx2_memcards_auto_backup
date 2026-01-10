@@ -22,24 +22,25 @@ foreach ($cmd in $pythonCommands) {
 }
 
 if (-not $pythonCmd) {
-    Write-Host "✗ Python 3 not found! Please install Python 3.6 or higher" -ForegroundColor Red
+    Write-Host "Python 3 not found! Please install Python 3.8 or higher" -ForegroundColor Red
     Read-Host "Press Enter to exit"
     exit 1
 }
 
 $pythonVersion = & $pythonCmd --version
-Write-Host "✓ Python found: $pythonVersion" -ForegroundColor Green
+Write-Host "Python found: $pythonVersion" -ForegroundColor Green
 
 Write-Host "Creating virtual environment..."
 & $pythonCmd -m venv venv
 
-"venv\Scripts\Activate.ps1"
+Write-Host "Activating virtual environment..."
+& "venv\Scripts\Activate.ps1"
 
-Write-Host "Installing deps..."
+Write-Host "Installing dependencies..."
 python -m pip install --upgrade pip
 pip install -r requirements.txt
 
-Write-Host "✓ Dependencies have been successfully installed" -ForegroundColor Green
+Write-Host "Dependencies have been successfully installed" -ForegroundColor Green
 
 $configFile = "pcsx2_backup_config.json"
 
@@ -50,14 +51,14 @@ if (-not (Test-Path $configFile)) {
     python setup.py
     
     if (-not (Test-Path $configFile)) {
-        Write-Host "✗ Setup was not completed" -ForegroundColor Red
+        Write-Host "Setup was not completed" -ForegroundColor Red
         Read-Host "Press Enter to exit"
         exit 1
     }
     
-    Write-Host "✓ Configuration successfully created" -ForegroundColor Green
+    Write-Host "Configuration successfully created" -ForegroundColor Green
 } else {
-    Write-Host "✓ Configuration file found" -ForegroundColor Green
+    Write-Host "Configuration file found" -ForegroundColor Green
 }
 
 Write-Host "Creating Windows service..."
@@ -89,12 +90,14 @@ try {
     
     Register-ScheduledTask -TaskName "PCSX2 Backup Service" -Action $action -Trigger $trigger -Settings $settings -Principal $principal -Force | Out-Null
     
-    Write-Host "✓ Service successfully installed as scheduled task" -ForegroundColor Green
+    Write-Host "Service successfully installed as scheduled task" -ForegroundColor Green
     Write-Host "The service will start automatically on system boot" -ForegroundColor Cyan
 }
 catch {
-    Write-Host "✗ Could not create scheduled task. You may need to run as Administrator" -ForegroundColor Red
+    Write-Host "Could not create scheduled task. You may need to run as Administrator" -ForegroundColor Yellow
+    Write-Host "You can manually run: pcsx2_backup_service.ps1" -ForegroundColor Cyan
 }
 
-Write-Host "✓ Installation complete" -ForegroundColor Greem
+Write-Host ""
+Write-Host "Installation Complete" -ForegroundColor Cyan
 Read-Host "Press Enter to exit"
